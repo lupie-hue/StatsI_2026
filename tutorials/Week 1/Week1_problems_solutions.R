@@ -17,13 +17,13 @@ detachAllPackages()
 y <- c(0, 4, 4, 5, 7, 10)
 
 # (1) find sum of y using the built-in R function
-sum_y <- sum(y)
+sum(y)
 
 # (2) find mean of y using your "own" function
-mean_y <- sum(y)/length(y)
+sum(y)/length(y)
 
 # now do the same thing, but faster using the built-in R function
-mean_y <- mean(y)
+mean(y)
 
 # (3) find sum of demeaned values
 sum_demeaned_y <- sum(y - mean_y)
@@ -46,6 +46,8 @@ median_vec <- median(quantilesVec)
 summary(quantilesVec)
 
 quantile(quantilesVec, c(0.25, 0.5, 0.75))
+
+quantile(quantilesVec, c(0.25, 0.5, 0.75), type = 1)
 
 boxplot(quantilesVec)
 
