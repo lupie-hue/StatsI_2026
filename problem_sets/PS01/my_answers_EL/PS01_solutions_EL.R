@@ -5,7 +5,7 @@
 #####################
 
 # set wd
-setwd('/Users/emilialupi/Desktop/Applied statistical analysis I/GitHub/StatsI_2026/problem_sets/PS01/solutions')
+setwd('/Users/emilialupi/Desktop/Applied statistical analysis I/GitHub/StatsI_2026/problem_sets/PS01/my_answers_EL')
 
 # remove objects
 rm(list=ls())
@@ -31,19 +31,25 @@ pkgTest <- function(pkg){
 # ex: stringr
 # lapply(c("stringr"),  pkgTest)
 
-lapply(c("ggplot2"),  pkgTest)
+lapply(c("ggplot2", "stargazer"),  pkgTest)
 
 #####################
 # Problem 1
 #####################
 
-# Dataset
+# Dataset: IQ scores of a random sample of 25 students
 y <- c(105, 69, 86, 100, 82, 111, 104, 110, 87, 108, 87, 90, 94, 113, 112, 98, 80, 97, 95, 111, 114, 89, 95, 126, 98)
 
 # Quick overview 
 summary(y) 
 
-# Descriptive statistics
+# -------------------------------#
+# QUESTION 1
+# -------------------------------#
+# Find a 90% confidence interval for the average student IQ in the school 
+# (As a hint, you first need the mean and SD to create a CI)
+
+# Descriptive statistics needed to find the CI
 n <- length(y)
 mean_y <- sum(y)/n
 var_y  <- sum((y - mean_y)^2) / (n - 1)
@@ -52,25 +58,7 @@ se_y   <- sd_y / sqrt(n)
 
 n; mean_y; sd_y; se_y
 
-# Visualizing the distribution
-hist(y,
-     col = "violet",
-     border = "white",
-     main = "Histogram of IQ scores",
-     xlab = "IQ scores")
-
-plot(density(y),
-     col = "violet",
-     main = "Density of IQ scores",
-     xlab = "IQ scores")
-
-# -------------------------------#
-# QUESTION 1
-# -------------------------------#
-# Find a 90% confidence interval for the average student IQ in the school 
-# (As a hint, you first need the mean and SD to create a CI)
-
-# The population SD is unknown and n is small, so we use the t distribution
+# The population SD is unknown and n is small, so we use the t-distribution
 # with df = n - 1 = 24. For a 90% CI we leave 5% in each tail (p = 0.95).
 t_score <- qt(0.95, df = n - 1)
 t_score
@@ -93,26 +81,33 @@ t.test(y, conf.level = 0.90)$conf.int
 # is higher than the average IQ score (100) among all the schools in the country.
 # Using the same sample, conduct the appropriate hypothesis test with α = 0.05.
 
-# "Higher than" indicates that it's going to be a one-tail test
+# "Higher than" indicates that it's going to be a one-tail test (upper-tail).
 
-# Is the average IQ in the school higher than 100? (α = 0.05)
+# STEP 1: Assumptions
+# - IQ is quantitative, and the 25 students were randomly sampled.
+# - Observations are assumed independent.
+# - With a small sample (n = 25), assume approximate population
+#   normality.
+# - Population SD is unknown: use a one-sample t-test (df = 24).
+
+# STEP 2: State Hypothesis
 # H0: mu <= 100  (the average IQ is not higher than 100)
 # HA: mu > 100   (the average IQ is higher than 100)
 
-# t = (sample mean - hypothesized mean) / SE
+# STEP 3: Test statistic: t = (sample mean - hypothesized mean) / SE
 t_stat <- (mean_y - 100) / se_y
 t_stat
 
-# p-value: probability of a t value at least this large in the upper tail
+# STEP 4: p-value: probability of a t value at least this large in the upper tail
 p_val <- pt(t_stat, df = n - 1, lower.tail = FALSE)
 p_val
 
+# STEP 5: Conclusion
+# ANSWER: t = -0.60, df = 24, p = 0.72 > 0.05 -> fail to reject H0.
+# There is not enough evidence that the average IQ in the school is higher than 100.
+
 # Built-in function check
 t.test(y, mu = 100, alternative = "greater", conf.level = 0.95)
-
-# ANSWER: t = -0.60, df = 24, p = 0.72 > 0.05 -> fail to reject H0.
-# There is no evidence that the average IQ in the school is higher than 100.
-# The sample mean (98.44) is below 100.
 
 #####################
 # Problem 2
@@ -133,6 +128,7 @@ summary(expenditure)
 # - X3:     people per thousand residing in urban areas
 # - Region: 1 = Northeast, 2 = North Central, 3 = South, 4 = West
 
+# Region is a category, not a quantity, so i turned it into a labelled factor.
 expenditure$Region <- factor(expenditure$Region,
                              levels = 1:4,
                              labels = c("Northeast", "North Central", "South", "West"))
@@ -141,55 +137,128 @@ table(expenditure$Region)
 # -------------------------------#
 # QUESTION 1
 # -------------------------------#
-# Plot relationships among Y, X1, X2, and X3
-pairs(expenditure[, c("Y", "X1", "X2", "X3")],
-      main = "Relationships among Y, X1, X2 and X3",
-      pch = 16)
+# Plot relationships among Y, X1, X2, and X3.
+# I used par() to arrange the six plots in a 2x3 grid and nested for loops
+# to plot each pair of variables without repeating the plotting code.
+pdf(file = "P1_relationships_expenditure.pdf", width = 14, height = 8)
+vars <- c("Y", "X1", "X2", "X3")
 
-# What are the correlations among them?
-round(cor(expenditure[, c("Y", "X1", "X2", "X3")]), 2)
-# ANSWER:
+labels <- c(
+  Y = "expenditure(Y)",
+  X1 = "income(X1)",
+  X2 = "financial insecurity(X2)",
+  X3 = "urban residents(X3)"
+)
+
+par(mfrow = c(2, 3))
+
+for (i in 1:(length(vars) - 1)) {
+  for (j in (i + 1):length(vars)) {
+    
+    plot(
+      expenditure[[vars[j]]],
+      expenditure[[vars[i]]],
+      xlab = labels[vars[j]],
+      ylab = labels[vars[i]],
+      main = paste(labels[vars[i]], "vs", labels[vars[j]]),
+      col = "violet",
+      pch = 19,
+      cex = 0.7
+    )
+    
+    abline(
+      lm(expenditure[[vars[i]]] ~ expenditure[[vars[j]]])
+    )
+    
+    r <- cor(
+      expenditure[[vars[i]]],
+      expenditure[[vars[j]]]
+    )
+    
+    mtext(
+      paste("r =", round(r, 2))
+    )
+  }
+}
+
+par(mfrow = c(1, 1))
+dev.off()
+
+# ANSWER: All pairwise correlations are positive.
+# Y has moderate correlations with X1 (0.53), X2 (0.45), and X3 (0.46).
+# X1 and X3 have the strongest correlation (0.60), while X2 has
+# weak correlations with X1 (0.21) and X3 (0.22).
 
 # -------------------------------#
 # QUESTION 2
 # -------------------------------#
-# Plot relationship between Y and Region
+# Plot relationship between Y and Region.
+# A boxplot compares the distribution of expenditure (numeric)
+# across regions (categorical), showing medians, spread, and potential outliers.
+png(file = "P2Q2_boxplot_Y_Region.png", width = 700, height = 500)
 ggplot(expenditure, aes(x = Region, y = Y, fill = Region)) +
   geom_boxplot() +
-  scale_fill_manual(values = c("hotpink", "purple", "blue", "turquoise")) +
+  scale_fill_manual(values = c("hotpink", "purple", "deepskyblue3", "turquoise")) +
   labs(title = "Housing Assistance Expenditure by Region",
        x = "Region",
        y = "Per capita expenditure on housing assistance") +
   theme_minimal() + guides(fill = "none")
+dev.off()
 
 # Which region has the highest average expenditure?
-# aggregate() applies mean() to Y separately for each region.
-aggregate(Y ~ Region, data = expenditure, FUN = mean)
+region_means <- aggregate(Y ~ Region, data = expenditure, FUN = mean)
+region_means
 
-# ANSWER (approx.): the West has the highest average (88.3), followed by the
+# I export the regional means as a LaTeX table using stargazer.
+stargazer::stargazer(
+  region_means,
+  type = "latex",
+  summary = FALSE,
+  rownames = FALSE,
+  digits = 1,
+  title = "Average Housing Assistance Expenditure by Region",
+  label = "tab:region_means",
+  out = "P2Q2_region_means_EL.tex"
+)
+
+# ANSWER: the West has the highest average (88.3), followed by the
 # North Central (83.9), the Northeast (79.4) and the South (69.2).
-# The West also has the highest median in the boxplot.
 
 # -------------------------------#
 # QUESTION 3
 # -------------------------------#
 # Plot relationship between Y and X1
+r <- cor(expenditure$X1, expenditure$Y)
+
+png(file = "P2Q3_Y_X1.png", width = 700, height = 500)
 ggplot(expenditure, aes(x = X1, y = Y)) +
   geom_point(color = "hotpink") +
-  geom_smooth(method = "lm", se = FALSE, color = "purple") +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  annotate("text",
+           x = min(expenditure$X1, na.rm = TRUE),
+           y = max(expenditure$Y, na.rm = TRUE) * 0.95,
+           label = sprintf("Correlation = %.2f", r),
+           hjust = 0) +
   labs(title = "Relationship between Expenditure and Income",
        x = "Per capita personal income (X1)",
        y = "Per capita expenditure on housing assistance (Y)") +
   theme_minimal()
+dev.off()
 
-# From the graph we can see that Y and X1 have a positively linear relationship
+# Y and X1 have a moderate positive association (r = 0.53).
 
-# Adding Region variable
+# Adding Region variable: color AND shape are both mapped to Region, so the groups are
+# distinguishable even without color 
+png(file = "P2Q3_Y_X1_by_Region.png", width = 700, height = 500)
 ggplot(expenditure, aes(x = X1, y = Y, color = Region, shape = Region)) +
   geom_point(size = 2.5) +
-  scale_color_manual(values = c("hotpink", "purple", "blue", "turquoise")) +
+  scale_color_manual(values = c("hotpink", "purple", "deepskyblue3", "turquoise")) +
   labs(title = "Relationship between Expenditure and Income, by Region",
        x = "Per capita personal income (X1)",
        y = "Per capita expenditure on housing assistance (Y)",
        color = "Region", shape = "Region") +
   theme_minimal()
+dev.off()
+
+# The regional groups partly cluster: Southern states tend toward lower
+# income and expenditure, while Northeastern states have higher incomes.
