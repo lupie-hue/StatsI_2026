@@ -174,11 +174,10 @@
 			In chisq.test(obs_freq) : Chi-squared approximation may be incorrect
 		\end{verbatim}
 		
-		\newpage
 		\item [(c)] Calculate the standardized residuals for each cell and put them in the table below.
 		
 		\vspace{.25cm}
-		\noindent\textbf{Standardized residuals.} The $\chi^2$ statistic tells us whether the two variables are independent overall, but not where any deviation from independence takes place. When the null hypothesis is rejected, standardized residuals show which cells are responsible for the rejection and in which direction, and therefore what the dependence means in practice. Even when, as here, the null is not rejected, they show which cells differ most from what independence would predict. Each residual measures how far the observed frequency of a cell lies from its expected frequency, expressed in standard errors:
+		\noindent\textbf{Standardized residuals.} The $\chi^2$ statistic tells us whether the two variables are independent overall, but not where any deviation from independence takes place. When the null hypothesis is rejected, standardized residuals show which cells are responsible for the rejection and in which direction, and therefore what the dependence means in practice. Even when the null is not rejected (like in this case), they show which cells differ most from what independence would predict. Each residual measures how far the observed frequency of a cell lies from its expected frequency, expressed in standard errors:
 		\begin{equation*}
 			z = \frac{f_o - f_e}{se} = \frac{f_o - f_e}{\sqrt{f_e\,(1 - \text{row prop.})(1 - \text{column prop.})}}
 		\end{equation*}
@@ -332,7 +331,7 @@
 		\noindent The estimated coefficient for the reservation policy is $\hat\beta_1 \approx 9.25$. Since \texttt{reserved} is binary, it is the difference in the average number of new or repaired drinking water facilities between villages whose GP was reserved for a female council head and villages whose GP was not. Unreserved villages have on average $\hat\beta_0 \approx 14.74$ facilities, while reserved villages have on average $14.74 + 9.25 = 23.99$, about 63\% more.
 		
 		\vspace{.25cm}
-		\noindent Because the reservation was randomly assigned, reserved and unreserved villages should not differ systematically in any other respect, so $\hat\beta_1$ can be interpreted as the causal effect of the policy rather than a simple association. Having a female council head therefore increased the number of new or repaired drinking water facilities by about 9.25 per village, which supports the authors' hypothesis that female politicians are more responsive to the policies women want, given that women complain more about drinking water quality.
+		\noindent Since the reservation was randomly assigned, reserved and unreserved villages should not differ systematically in any other respect, so $\hat\beta_1$ can be interpreted as the causal effect of the policy rather than a simple association. Having a female council head therefore increased the number of new or repaired drinking water facilities by about 9.25 per village, which supports the authors' hypothesis that female politicians are more responsive to the policies women want, given that women complain more about drinking water quality.
 		
 		\vspace{.25cm}
 		\noindent The inference about the slope in part (b) adds two further insights into this result. On the one hand, the effect is statistically significant at the 5\% level ($t = 2.34$, $p = 0.0197$), so it is unlikely to be due to chance. On the other hand, the 95\% confidence interval $[1.49, 17.02]$ is wide, so while we can be confident that the effect is positive, its exact size is uncertain, and the result would not be significant at the 1\% level. Finally, the low $R^2$ ($0.017$) shows that the policy explains only a small share of the variation in water facilities across villages. This does not weaken the causal interpretation, but it indicates that most of the differences between villages depend on other factors.
