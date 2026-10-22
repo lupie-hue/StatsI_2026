@@ -61,95 +61,283 @@
 \newtheorem{hyp}{Hypothesis}
 
 \title{Problem Set 2}
-\date{Due: October 22, 2026}
+\date{Due: October 22, 2026\\[0.5em]Emilia Lupi}
 \author{Applied Stats/Quant Methods 1}
 
 \begin{document}
 	\maketitle
 	\section*{Instructions}
-\begin{itemize}
-	\item Please show your work! You may lose points by simply writing in the answer. If the problem requires you to execute commands in \texttt{R}, please include the code you used to get your answers. Please also include the \texttt{.R} file that contains your code. If you are not sure if work needs to be shown for a particular problem, please ask.
-	\item Your homework should be submitted electronically on GitHub.
-	\item This problem set is due before 23:59 on Thursday October 22, 2026. No late assignments will be accepted.
-
-\end{itemize}
-
+	\begin{itemize}
+		\item Please show your work! You may lose points by simply writing in the answer. If the problem requires you to execute commands in \texttt{R}, please include the code you used to get your answers. Please also include the \texttt{.R} file that contains your code. If you are not sure if work needs to be shown for a particular problem, please ask.
+		\item Your homework should be submitted electronically on GitHub.
+		\item This problem set is due before 23:59 on Thursday October 22, 2026. No late assignments will be accepted.
+		
+	\end{itemize}
+	
 	
 	\vspace{.5cm}
 	\section*{Question 1: Political Science}
-		\vspace{.25cm}
-	The following table was created using the data from a study run in a major Latin American city.\footnote{Fried, Lagunes, and Venkataramani (2010). ``Corruption and Inequality at the Crossroad: A Multimethod Study of Bribery and Discrimination in Latin America. \textit{Latin American Research Review}. 45 (1): 76-97.} As part of the experimental treatment in the study, one employee of the research team was chosen to make illegal left turns across traffic to draw the attention of the police officers on shift. Two employee drivers were upper class, two were lower class drivers, and the identity of the driver was randomly assigned per encounter. The researchers were interested in whether officers were more or less likely to solicit a bribe from drivers depending on their class (officers use phrases like, ``We can solve this the easy way'' to draw a bribe). The table below shows the resulting data.
-
-\newpage
-\begin{table}[h!]
-	\centering
-	\begin{tabular}{l | c c c }
-		& Not Stopped & Bribe requested & Stopped/given warning \\
-		\\[-1.8ex] 
-		\hline \\[-1.8ex]
-		Upper class & 14 & 6 & 7 \\
-		Lower class & 7 & 7 & 1 \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\begin{enumerate}
-	
-	\item [(a)]
-	Calculate the $\chi^2$ test statistic by hand/manually (even better if you can do "by hand" in \texttt{R}).\\
-	\vspace{7cm}
-	
-	\item [(b)]
-	Now calculate the p-value from the test statistic you just created (in \texttt{R}).\footnote{Remember frequency should be $>$ 5 for all cells, but let's calculate the p-value here anyway.}  What do you conclude if $\alpha = 0.1$?\\
+	\vspace{.25cm}
+	The following table was created using the data from a study run in a major Latin American city.\footnote{Fried, Lagunes, and Venkataramani (2010). ``Corruption and Inequality at the Crossroad: A Multimethod Study of Bribery and Discrimination in Latin America.'' \textit{Latin American Research Review}. 45 (1): 76-97.} As part of the experimental treatment in the study, one employee of the research team was chosen to make illegal left turns across traffic to draw the attention of the police officers on shift. Two employee drivers were upper class, two were lower class drivers, and the identity of the driver was randomly assigned per encounter. The researchers were interested in whether officers were more or less likely to solicit a bribe from drivers depending on their class (officers use phrases like, ``We can solve this the easy way'' to draw a bribe). The table below shows the resulting data.
 	
 	\newpage
-	\item [(c)] Calculate the standardized residuals for each cell and put them in the table below.
-	\vspace{1cm}
-	
-	\begin{table}[h]
+	\begin{table}[H]
 		\centering
 		\begin{tabular}{l | c c c }
 			& Not Stopped & Bribe requested & Stopped/given warning \\
 			\\[-1.8ex] 
 			\hline \\[-1.8ex]
-			Upper class  &  &  &  \\
-			\\
-			Lower class &  &   &   \\
-			
+			Upper class & 14 & 6 & 7 \\
+			Lower class & 7 & 7 & 1 \\
+			\hline
 		\end{tabular}
 	\end{table}
 	
+	\begin{enumerate}
+		
+		\item [(a)]
+		Calculate the $\chi^2$ test statistic by hand/manually (even better if you can do ``by hand'' in \texttt{R}).
+		
+		\vspace{.25cm}
+		
+		\noindent\textbf{Assumptions.} The $\chi^2$ test of independence requires two categorical variables, a random sample, and an expected frequency of at least 5 in every cell. The first two conditions hold, since driver class and police behaviour are both categorical and the identity of the driver was randomly assigned in each encounter. The third condition, however, is not met, as two expected frequencies fall below 5 (Table~\ref{tab:exp_freq}), so the results should be interpreted with caution.
+		
+		\vspace{.25cm}
+		\noindent\textbf{Hypotheses.}
+		\begin{align*}
+			H_0 &: \text{driver class and police behaviour are independent} \quad (f_o = f_e)\\
+			H_A &: \text{driver class and police behaviour are dependent} \quad (f_o \neq f_e)
+		\end{align*}
+		
+		\noindent\textbf{Step 1: marginal totals.} I first calculated the row totals, the column totals and the grand total $n$, which are reported together with the observed frequencies in Table~\ref{tab:obs_freq}.
+		
+		\lstinputlisting[language=R, firstline=61, lastline=63]{PS02_answersEL.R}
+		\lstinputlisting[language=R, firstline=69, lastline=69]{PS02_answersEL.R}
+		
+		\input{obs_freq.tex}
+		
+		\noindent\textbf{Step 2: expected frequencies.} Under the null hypothesis of independence, the expected frequency of each cell is
+		\begin{equation*}
+			f_e = \frac{(\text{row total}) \times (\text{column total})}{n}.
+		\end{equation*}
+		For example, for upper class drivers who were not stopped, $f_e = (27 \times 21)/42 = 13.5$. The expected frequencies for all cells are shown in Table~\ref{tab:exp_freq}.
+		
+		\lstinputlisting[language=R, firstline=79, lastline=79]{PS02_answersEL.R}
+		
+		\input{exp_freq.tex}
+		
+		\noindent\textbf{Step 3: test statistic.} The $\chi^2$ statistic sums, over all cells, the squared difference between observed and expected frequencies divided by the expected frequency:
+		\begin{equation*}
+			\chi^2 = \sum \frac{(f_o - f_e)^2}{f_e}.
+		\end{equation*}
+		
+		\lstinputlisting[language=R, firstline=97, lastline=97]{PS02_answersEL.R}
+		
+		\noindent This gives $\chi^2 \approx 3.79$.
+		
+		
+		\item [(b)]
+		Now calculate the p-value from the test statistic you just created (in \texttt{R}).\footnote{Remember frequency should be $>$ 5 for all cells, but let's calculate the p-value here anyway.}  What do you conclude if $\alpha = 0.1$?
+		
+		\vspace{.25cm}
+		\noindent\textbf{Degrees of freedom.} The degrees of freedom are the number of cells whose frequencies can vary freely once the row and column totals are fixed. In each row, once all but one cell are known, the last cell is determined by the row total, and the same holds for each column. Therefore, with $r$ rows and $c$ columns, only $(r-1)(c-1)$ cells are free to vary:
+		\begin{equation*}
+			df = (r-1)(c-1) = (2-1)(3-1) = 2.
+		\end{equation*}
+		
+		\lstinputlisting[language=R, firstline=103, lastline=103]{PS02_answersEL.R}
+		
+		\noindent\textbf{p-value.} Under $H_0$, the test statistic follows a $\chi^2$ distribution with 2 degrees of freedom. Since the statistic is built from squared deviations, larger differences from independence always produce larger values, so the p-value is the right-tail area beyond the observed statistic:
+		\begin{equation*}
+			p = P(\chi^2_2 \geq 3.79) \approx 0.150.
+		\end{equation*}
+		
+		\lstinputlisting[language=R, firstline=107, lastline=107]{PS02_answersEL.R}
+		
+		\noindent The argument \texttt{lower.tail = FALSE} returns the area to the right of the statistic rather than to the left.
+		
+		\vspace{.25cm}
+		\noindent\textbf{Conclusion.} Since $p \approx 0.150 > 0.1 = \alpha$, we fail to reject the null hypothesis of independence. At the 10\% significance level, the data do not provide sufficient evidence that police officers' behaviour, including asking for bribes, depends on the driver's social class. This does not prove that the two variables are independent, as the small sample ($n = 42$) limits the power of the test. Moreover, since two expected frequencies are below 5, the $\chi^2$ approximation, and hence the p-value, may be inaccurate.
+		
+		\vspace{.25cm}
+		\noindent\textbf{Check.} Finally, I verified both the test statistic from part (a) and the p-value with the built-in function, which returns the same results. As expected, \texttt{R} also warns that the approximation may be incorrect, because some expected frequencies are below 5.
+		
+		\lstinputlisting[language=R, firstline=115, lastline=115]{PS02_answersEL.R}
+		
+		\begin{verbatim}
+			Pearson's Chi-squared test
+			
+			data:  obs_freq
+			X-squared = 3.7912, df = 2, p-value = 0.1502
+			
+			Warning message:
+			In chisq.test(obs_freq) : Chi-squared approximation may be incorrect
+		\end{verbatim}
+		
+		\newpage
+		\item [(c)] Calculate the standardized residuals for each cell and put them in the table below.
+		
+		\vspace{.25cm}
+		\noindent\textbf{Standardized residuals.} The $\chi^2$ statistic tells us whether the two variables are independent overall, but not where any deviation from independence takes place. When the null hypothesis is rejected, standardized residuals show which cells are responsible for the rejection and in which direction, and therefore what the dependence means in practice. Even when, as here, the null is not rejected, they show which cells differ most from what independence would predict. Each residual measures how far the observed frequency of a cell lies from its expected frequency, expressed in standard errors:
+		\begin{equation*}
+			z = \frac{f_o - f_e}{se} = \frac{f_o - f_e}{\sqrt{f_e\,(1 - \text{row prop.})(1 - \text{column prop.})}}
+		\end{equation*}
+		where the denominator is the standard error of $f_o - f_e$ under the null hypothesis, and the row and column proportions are the row and column totals divided by $n$. Since $z$ follows approximately a standard normal distribution under $H_0$, residuals larger than about 2 in absolute value ($|z| > 1.96$) indicate a cell that deviates significantly from independence at the 5\% level.
+		
+		\lstinputlisting[language=R, firstline=122, lastline=126]{PS02_answersEL.R}
+		
+		\input{std_res.tex}
+		
+		\item [(d)] How might the standardized residuals help you interpret the results?  
+		
+		\vspace{.25cm}
+		\noindent The overall test in part (b) only tells us that we cannot reject independence, whereas the standardized residuals in Table~\ref{tab:std_res} show how each cell contributes to that result. A positive residual means that a cell contains more observations than expected under independence, and a negative residual means it contains fewer. The largest residuals concern bribes: lower class drivers were asked for a bribe more often than expected ($z = 1.64$), while upper class drivers were asked less often ($z = -1.64$). On the other hand, upper class drivers were stopped and given a warning more often than expected ($z = 1.52$), and lower class drivers less often ($z = -1.52$). The ``not stopped'' column, instead, is very close to independence ($z = \pm 0.32$). The residuals in the two rows are equal in size and opposite in sign, since in a table with two rows a higher count than expected in one row must be balanced by a lower count in the other.
+		
+		\vspace{.25cm}
+		\noindent Taken together, the residuals point to a pattern in which officers treat lower class drivers more harshly, asking them for bribes instead of only giving them a warning. However, no residual exceeds 1.96 in absolute value, so no single cell differs significantly from independence, which is consistent with the failure to reject $H_0$ in part (b). The pattern should therefore be seen as a possible tendency rather than a clear result, especially given the small sample and the expected frequencies below 5.
+		
+		
+	\end{enumerate}
+	\newpage
 	
-	\vspace{7cm}
-	\item [(d)] How might the standardized residuals help you interpret the results?  
+	\section*{Question 2: Economics}
+	Chattopadhyay and Duflo were interested in whether women promote different policies than men.\footnote{Chattopadhyay and Duflo. (2004). ``Women as Policy Makers: Evidence from a Randomized Policy Experiment in India.'' \textit{Econometrica}. 72 (5), 1409-1443.} Answering this question with observational data is pretty difficult due to potential confounding problems (e.g. the districts that choose female politicians are likely to systematically differ in other aspects too). Hence, they exploit a randomized policy experiment in India, where since the mid-1990s, $\frac{1}{3}$ of village council heads have been randomly reserved for women. A subset of the data from West Bengal can be found at the following link: \url{https://raw.githubusercontent.com/kosukeimai/qss/master/PREDICTION/women.csv}
 	
-\end{enumerate}
-\newpage
-
-\section*{Question 2: Economics}
-Chattopadhyay and Duflo were interested in whether women promote different policies than men.\footnote{Chattopadhyay and Duflo. (2004). ``Women as Policy Makers: Evidence from a Randomized Policy Experiment in India. \textit{Econometrica}. 72 (5), 1409-1443.} Answering this question with observational data is pretty difficult due to potential confounding problems (e.g. the districts that choose female politicians are likely to systematically differ in other aspects too). Hence, they exploit a randomized policy experiment in India, where since the mid-1990s, $\frac{1}{3}$ of village council heads have been randomly reserved for women. A subset of the data from West Bengal can be found at the following link: \url{https://raw.githubusercontent.com/kosukeimai/qss/master/PREDICTION/women.csv}\\
-
-\noindent Each observation in the data set represents a village and there are two villages associated with one GP (i.e. a level of government is called "GP"). Figure~\ref{fig:women_desc} below shows the names and descriptions of the variables in the dataset. The authors hypothesize that female politicians are more likely to support policies female voters want. Researchers found that more women complain about the quality of drinking water than men. You need to estimate the effect of the reservation policy on the number of new or repaired drinking water facilities in the villages.
-\vspace{.5cm}
-\begin{figure}[h!]
-	\caption{\footnotesize{Names and description of variables from Chattopadhyay and Duflo (2004).}}
+	
+	\noindent Each observation in the data set represents a village and there are two villages associated with one GP (i.e. a level of government is called ``GP''). Table~\ref{tab:women_desc} below shows the names and descriptions of the variables in the dataset. The authors hypothesize that female politicians are more likely to support policies female voters want. Researchers found that more women complain about the quality of drinking water than men. You need to estimate the effect of the reservation policy on the number of new or repaired drinking water facilities in the villages.
 	\vspace{.5cm}
-	\centering
-	\label{fig:women_desc}
-	\includegraphics[width=1.1\textwidth]{../../../../graphics/women_desc.png}
-\end{figure}		
-
-\newpage
-\begin{enumerate}
-	\item [(a)] State a null and alternative (two-tailed) hypothesis. 
+	\begin{table}[H]
+		\centering
+		\caption{\footnotesize{Names and description of variables from Chattopadhyay and Duflo (2004).}}
+		\label{tab:women_desc}
+		\vspace{.25cm}
+		\begin{tabular}{l p{11cm}}
+			\hline
+			Name & Description \\
+			\hline
+			\texttt{GP} & An identifier for the Gram Panchayat (GP) \\
+			\texttt{village} & An identifier for each village \\
+			\texttt{reserved} & A binary variable indicating whether the GP was reserved for women leaders or not \\
+			\texttt{female} & A binary variable indicating whether the GP had a female leader or not \\
+			\texttt{irrigation} & The number of new or repaired irrigation facilities in the village since the reserve policy started \\
+			\texttt{water} & The number of new or repaired drinking water facilities in the village since the reserve policy started \\
+			\hline
+		\end{tabular}
+	\end{table}		
 	
-	\vspace{6cm}
-	\item [(b)] Run a bivariate regression to test this hypothesis in \texttt{R} (include your code!).
+	\newpage
+	\begin{enumerate}
+		\item [(a)] State a null and alternative (two-tailed) hypothesis. 
+		
+		\vspace{.25cm}
+		\noindent To estimate the effect of the reservation policy on drinking water facilities, we use the bivariate regression model
+		\begin{equation*}
+			\text{water}_i = \beta_0 + \beta_1\,\text{reserved}_i + \varepsilon_i,
+		\end{equation*}
+		where $\text{water}_i$ is the number of new or repaired drinking water facilities in village $i$ and $\text{reserved}_i$ equals 1 if the village's GP was reserved for a female council head and 0 otherwise. Since \texttt{reserved} is binary, $\beta_0$ is the mean number of facilities in unreserved villages, and $\beta_1$ is the difference in means between reserved and unreserved villages. The hypotheses are therefore
+		\begin{align*}
+			H_0 &: \beta_1 = 0 \quad \text{(the reservation policy has no effect on drinking water facilities)}\\
+			H_A &: \beta_1 \neq 0 \quad \text{(the reservation policy has an effect on drinking water facilities)}
+		\end{align*}
+		The test is two-tailed, so the alternative allows the policy to either increase or decrease the number of facilities, even though the authors expect a positive effect.
+		
+		\item [(b)] Run a bivariate regression to test this hypothesis in \texttt{R} (include your code!).
+		
+		\vspace{.25cm}
+		\noindent\textbf{Variables.} I first set \texttt{reserved} as the explanatory variable $x$ and \texttt{water} as the outcome $y$, and stored the number of observations ($n = 322$ villages).
+		
+		\lstinputlisting[language=R, firstline=163, lastline=165]{PS02_answersEL.R}
+		
+		\noindent\textbf{Slope and intercept.} The least squares estimates of the slope and the intercept are
+		\begin{equation*}
+			\hat\beta_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2} = \frac{S_{xy}}{S_{xx}}, \qquad \hat\beta_0 = \bar{y} - \hat\beta_1 \bar{x}.
+		\end{equation*}
+		
+		\lstinputlisting[language=R, firstline=169, lastline=170]{PS02_answersEL.R}
+		\lstinputlisting[language=R, firstline=175, lastline=178]{PS02_answersEL.R}
+		
+		\noindent This gives $\hat\beta_1 \approx 9.25$ and $\hat\beta_0 \approx 14.74$, so the prediction equation is
+		\begin{equation*}
+			\widehat{\text{water}}_i = 14.74 + 9.25\,\text{reserved}_i.
+		\end{equation*}
+		Since \texttt{reserved} is binary, the model predicts 14.74 facilities for unreserved villages and $14.74 + 9.25 = 23.99$ for reserved villages.
+		
+		\lstinputlisting[language=R, firstline=185, lastline=185]{PS02_answersEL.R}
+		
+		\noindent\textbf{Inference about the slope.} We now test
+		\begin{equation*}
+			H_0: \beta_1 = 0 \qquad \text{against} \qquad H_A: \beta_1 \neq 0
+		\end{equation*}
+		using the $t$-statistic, which requires the standard error of $\hat\beta_1$. To obtain it, I first computed the residuals $e_i = y_i - \hat{y}_i$ and the estimated standard deviation of the error term,
+		\begin{equation*}
+			\hat\sigma = \sqrt{\frac{\sum e_i^2}{n-2}},
+		\end{equation*}
+		where we divide by $n - 2$ because two parameters, $\beta_0$ and $\beta_1$, have been estimated.
+		
+		\lstinputlisting[language=R, firstline=186, lastline=187]{PS02_answersEL.R}
+		
+		\noindent This gives $\hat\sigma^2 \approx 1118.61$ and therefore $\hat\sigma \approx 33.45$. On average, the number of facilities in a village lies about 33 facilities away from its predicted value, which shows that the data are very noisy around the regression line.
+		
+		\vspace{.25cm}
+		\noindent The standard error of $\hat\beta_1$ is then
+		\begin{equation*}
+			se(\hat\beta_1) = \frac{\hat\sigma}{\sqrt{\sum (x_i - \bar{x})^2}} = \sqrt{\frac{\hat\sigma^2}{S_{xx}}}.
+		\end{equation*}
+		
+		\lstinputlisting[language=R, firstline=193, lastline=193]{PS02_answersEL.R}
+		
+		\noindent This gives $se(\hat\beta_1) \approx 3.95$, which measures how much the estimated slope would vary across repeated samples. The denominator, $S_{xx}$, measures how spread out the values of $x$ are around their mean. The more spread out they are, the larger $S_{xx}$ and the smaller the standard error, so we obtain a more precise estimate of the slope. In contrast, the noisier the data (the larger $\hat\sigma$), the larger the standard error.
+		
+		\vspace{.25cm}
+		\noindent Finally, the $t$-statistic compares the estimated slope with its value under $H_0$, in units of standard errors:
+		\begin{equation*}
+			t = \frac{\hat\beta_1 - 0}{se(\hat\beta_1)} = \frac{9.25}{3.95} \approx 2.34.
+		\end{equation*}
+		
+		\lstinputlisting[language=R, firstline=197, lastline=197]{PS02_answersEL.R}
+		
+		\noindent\textbf{p-value.} Under $H_0$, the $t$-statistic follows a $t$-distribution with $df = n - 2 = 320$ degrees of freedom. Since the test is two-tailed, the p-value is the probability of a $t$-statistic at least as extreme as 2.34 in either direction, which is why the upper-tail area is multiplied by 2.
+		
+		\lstinputlisting[language=R, firstline=202, lastline=203]{PS02_answersEL.R}
+		
+		\noindent This gives $p \approx 0.0197$. If the reservation policy had no effect, a difference as large as the one observed would occur only about 2\% of the time. Since $p < 0.05$, we reject $H_0$ at the 5\% significance level and conclude that the reservation policy had a statistically significant effect on the number of new or repaired drinking water facilities.
+		
+		\vspace{.25cm}
+		\noindent\textbf{Confidence interval.} The 95\% confidence interval for $\beta_1$ is
+		\begin{equation*}
+			\hat\beta_1 \pm t_{0.025,\,df} \times se(\hat\beta_1),
+		\end{equation*}
+		where $t_{0.025,\,df} \approx 1.97$ is the critical value leaving 2.5\% in each tail of the $t$-distribution with 320 degrees of freedom.
+		
+		\lstinputlisting[language=R, firstline=211, lastline=213]{PS02_answersEL.R}
+		
+		\noindent This gives a 95\% confidence interval of $[1.49, 17.02]$. We are 95\% confident that the true effect of the reservation policy lies between 1.49 and 17.02 additional new or repaired drinking water facilities per village. Since the interval does not contain 0, it confirms the rejection of $H_0$. However, its width shows that, although the effect is clearly positive, its exact size is estimated with considerable uncertainty.
+		
+		\vspace{.25cm}
+		\noindent\textbf{Check.} Finally, I verified the manual calculations with the built-in \texttt{lm()} function. As Table~\ref{tab:regression} shows, it returns the same intercept, slope, standard error and significance level as the manual computation.
+		
+		\lstinputlisting[language=R, firstline=220, lastline=220]{PS02_answersEL.R}
+		
+		\input{regression.tex}
+		
+		\noindent The conclusion depends on the chosen significance level. With a 99\% confidence interval, which corresponds to $\alpha = 0.01$, the interval becomes $[-0.98, 19.48]$. Since it contains 0, we would fail to reject $H_0$, consistent with $p = 0.0197 > 0.01$.
+		
+		\lstinputlisting[language=R, firstline=233, lastline=233]{PS02_answersEL.R}
+		
+		\noindent By using a 95\% interval, we accept a 5\% probability of rejecting the null hypothesis when it is actually true, that is, of concluding that the policy has an effect when it does not.
+		
+		\item [(c)] Interpret the coefficient estimate for reservation policy. 
+		
+		\vspace{.25cm}
+		\noindent The estimated coefficient for the reservation policy is $\hat\beta_1 \approx 9.25$. Since \texttt{reserved} is binary, it is the difference in the average number of new or repaired drinking water facilities between villages whose GP was reserved for a female council head and villages whose GP was not. Unreserved villages have on average $\hat\beta_0 \approx 14.74$ facilities, while reserved villages have on average $14.74 + 9.25 = 23.99$, about 63\% more.
+		
+		\vspace{.25cm}
+		\noindent Because the reservation was randomly assigned, reserved and unreserved villages should not differ systematically in any other respect, so $\hat\beta_1$ can be interpreted as the causal effect of the policy rather than a simple association. Having a female council head therefore increased the number of new or repaired drinking water facilities by about 9.25 per village, which supports the authors' hypothesis that female politicians are more responsive to the policies women want, given that women complain more about drinking water quality.
+		
+		\vspace{.25cm}
+		\noindent The inference about the slope in part (b) adds two further insights into this result. On the one hand, the effect is statistically significant at the 5\% level ($t = 2.34$, $p = 0.0197$), so it is unlikely to be due to chance. On the other hand, the 95\% confidence interval $[1.49, 17.02]$ is wide, so while we can be confident that the effect is positive, its exact size is uncertain, and the result would not be significant at the 1\% level. Finally, the low $R^2$ ($0.017$) shows that the policy explains only a small share of the variation in water facilities across villages. This does not weaken the causal interpretation, but it indicates that most of the differences between villages depend on other factors.
+	\end{enumerate}
 	
-	\vspace{6cm}
-	\item [(c)] Interpret the coefficient estimate for reservation policy. 
-\end{enumerate}
-
-
-%\end{enumerate}
+	
+	%\end{enumerate}
 \end{document}
