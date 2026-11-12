@@ -33,18 +33,18 @@
 \usepackage{listings}
 \usepackage{color}
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codedarkred}{rgb}{0.55,0,0}
+\definecolor{codedarkblue}{rgb}{0,0,0.55}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 \lstdefinestyle{mystyle}{
 	backgroundcolor=\color{backcolour},   
-	commentstyle=\color{codegreen},
-	keywordstyle=\color{magenta},
+	basicstyle=\footnotesize\color{codedarkblue},
+	commentstyle=\color{codedarkred},
+	keywordstyle=\color{codedarkred},
 	numberstyle=\tiny\color{codegray},
-	stringstyle=\color{codepurple},
-	basicstyle=\footnotesize,
+	stringstyle=\color{codedarkred},
 	breakatwhitespace=false,         
 	breaklines=true,                 
 	captionpos=b,                    
@@ -86,11 +86,13 @@
 	\begin{enumerate}
 		\item Run a regression where the outcome variable is \texttt{voteshare} and the explanatory variable is \texttt{difflog}.
 		
+		\noindent To run the regression, I used the \texttt{lm()} function in \texttt{R}, with \texttt{voteshare} as the outcome variable and \texttt{difflog} as the explanatory variable. The results are reported in Table~\ref{tab:regression_q1}.
+		
 		\lstinputlisting[language=R, firstline=51, lastline=51]{PS03_answersEL.R}
 		
 		\input{regression_q1.tex}
 		
-		\noindent The intercept (0.579) is the predicted vote share of the incumbent when \texttt{difflog} is 0, that is, when the incumbent and the challenger spend the same amount. In this case the incumbent is predicted to get about 57.9\% of the vote. The slope (0.042) means that a one unit increase in \texttt{difflog} is associated with an increase of about 0.042 (4.2 percentage points) in the incumbent's vote share. The p-value of the slope is far below 0.05, so we reject the null hypothesis that $\beta_1 = 0$: the relationship is statistically significant. The $R^2$ shows that \texttt{difflog} explains about 36.7\% of the variation in \texttt{voteshare}.
+		\noindent The intercept (0.579) is the predicted vote share of the incumbent when \texttt{difflog} is 0, that is, when the incumbent and the challenger spend the same amount. In this case the incumbent is predicted to get about 57.9\% of the vote. The slope (0.042) means that a one unit increase in \texttt{difflog} is associated with an increase of about 0.042 in the incumbent's vote share. The p-value of the slope is below 0.01, so we reject the null hypothesis that $\beta_1 = 0$: the relationship is statistically significant. The $R^2$ shows that \texttt{difflog} explains about 36.7\% of the variation in \texttt{voteshare}.
 		
 		\item Make a scatterplot of the two variables and add the regression line.
 		
@@ -102,7 +104,7 @@
 			\caption{Scatterplot of \texttt{voteshare} and \texttt{difflog} with the regression line}
 		\end{figure}
 		
-		\noindent The points and the line go upward: when the incumbent spends more than the challenger, the incumbent tends to get a higher vote share.
+		\noindent The scatterplot shows a clear positive relationship between the difference in campaign spending and the incumbent's vote share: when the incumbent spends more than the challenger, the incumbent tends to get a higher vote share.
 		
 		\item Save the residuals of the model in a separate object.
 		
@@ -110,7 +112,7 @@
 		
 		\input{resid_q1.tex}
 		
-		\noindent Each residual is the difference between the observed vote share and the vote share predicted by the model, $\hat{\varepsilon}_i = y_i - \hat{y}_i$. They show the part of \texttt{voteshare} that is not explained by \texttt{difflog}. Their mean is 0, as always in OLS with an intercept.
+		\noindent Each residual is the difference between the observed vote share and the vote share predicted by the model, $\hat{\varepsilon}_i = y_i - \hat{y}_i$. They show the part of \texttt{voteshare} that is not explained by \texttt{difflog}. Their mean is 0, as always in OLS with an intercept. This means that the positive and negative residuals cancel out exactly, so their sum and their average are both 0
 		
 		\item Write the prediction equation.
 		
@@ -124,11 +126,13 @@
 	\begin{enumerate}
 		\item Run a regression where the outcome variable is \texttt{presvote} and the explanatory variable is \texttt{difflog}.
 		
+		\noindent To run the regression, I used the \texttt{lm()} function in \texttt{R}, with \texttt{presvote} as the outcome variable and \texttt{difflog} as the explanatory variable. The results are reported in Table~\ref{tab:regression_q2}.
+		
 		\lstinputlisting[language=R, firstline=93, lastline=93]{PS03_answersEL.R}
 		
 		\input{regression_q2.tex}
 		
-		\noindent When the two candidates spend the same amount (\texttt{difflog} $= 0$), the predicted vote share of the presidential candidate of the incumbent's party is about 50.8\%. A one unit increase in \texttt{difflog} is associated with an increase of about 0.024 (2.4 percentage points) in \texttt{presvote}. The slope is statistically significant (p-value $< 0.001$), but the relationship is weaker than in Question 1: \texttt{difflog} explains only about 8.8\% of the variation in \texttt{presvote}.
+		\noindent When the two candidates spend the same amount (\texttt{difflog} $= 0$), the predicted vote share of the presidential candidate of the incumbent's party is about 50.8\% (intercept). A one unit increase in \texttt{difflog} is associated with an increase of about 0.024 in \texttt{presvote}. The slope is statistically significant (p-value $< 0.001$). However, the $R^2$ is 0.088, which means that \texttt{difflog} explains only about 8.8\% of the variation in \texttt{presvote}, so most of the differences in the presidential vote share across districts depend on other factors.
 		
 		\item Make a scatterplot of the two variables and add the regression line.
 		
@@ -140,7 +144,7 @@
 			\caption{Scatterplot of \texttt{presvote} and \texttt{difflog} with the regression line}
 		\end{figure}
 		
-		\noindent The line goes slightly upward, but the points are much more spread around it than in Question 1, which matches the low $R^2$.
+		\noindent The scatterplot shows a positive relationship between the difference in campaign spending and the vote share of the presidential candidate of the incumbent's party, since the regression line goes upward. However, the line is quite flat compared to how widely the points are spread, so knowing the spending difference in a district does not help much to predict the presidential vote share there, which is consistent with the low $R^2$.
 		
 		\item Save the residuals of the model in a separate object.
 		
@@ -164,11 +168,13 @@
 	\begin{enumerate}
 		\item Run a regression where the outcome variable is \texttt{voteshare} and the explanatory variable is \texttt{presvote}.
 		
+		\noindent To run the regression, I used the \texttt{lm()} function in \texttt{R}, with \texttt{voteshare} as the outcome variable and \texttt{presvote} as the explanatory variable. The results are reported in Table~\ref{tab:regression_q3}.
+		
 		\lstinputlisting[language=R, firstline=135, lastline=135]{PS03_answersEL.R}
 		
 		\input{regression_q3.tex}
 		
-		\noindent The slope (0.388) means that when the vote share of the presidential candidate of the incumbent's party increases by 1 percentage point, the incumbent's vote share is predicted to increase by about 0.39 percentage points. The slope is statistically significant (p-value $< 0.001$), and \texttt{presvote} explains about 20.6\% of the variation in \texttt{voteshare}. The intercept (0.441) is the predicted vote share when \texttt{presvote} is 0. This value is outside the range of the data, so it has no useful meaning on its own.
+		\noindent The slope (0.388) means that when the vote share of the presidential candidate of the incumbent's party increases by 1 percentage point, the incumbent's vote share is predicted to increase by about 0.39 percentage points. The slope is statistically significant (p-value $< 0.001$), and \texttt{presvote} explains about 20.6\% of the variation in \texttt{voteshare}. The intercept (0.441) is the predicted vote share when \texttt{presvote} is 0.
 		
 		\item Make a scatterplot of the two variables and add the regression line.
 		
@@ -180,7 +186,7 @@
 			\caption{Scatterplot of \texttt{voteshare} and \texttt{presvote} with the regression line}
 		\end{figure}
 		
-		\noindent The plot shows a positive relationship: incumbents tend to do better in districts where the presidential candidate of their party also does better.
+		\noindent The scatterplot shows a positive relationship: incumbents tend to do better in districts where the presidential candidate of their party also does better.
 		
 		\item Write the prediction equation.
 		
@@ -193,6 +199,8 @@
 	\noindent The residuals from part (a) tell us how much of the variation in \texttt{voteshare} is $not$ explained by the difference in spending between incumbent and challenger. The residuals in part (b) tell us how much of the variation in \texttt{presvote} is $not$ explained by the difference in spending between incumbent and challenger in the district.
 	\begin{enumerate}
 		\item Run a regression where the outcome variable is the residuals from Question 1 and the explanatory variable is the residuals from Question 2.
+		
+		\noindent To run the regression, I used the \texttt{lm()} function in \texttt{R}, with the residuals from Question 1 (\texttt{resid\_1}) as the outcome variable and the residuals from Question 2 (\texttt{resid\_2}) as the explanatory variable. The results are reported in Table~\ref{tab:regression_q4}.
 		
 		\lstinputlisting[language=R, firstline=165, lastline=165]{PS03_answersEL.R}
 		
@@ -207,10 +215,10 @@
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.7\textwidth]{plot_q4.pdf}
-			\caption{Added variable plot: residuals of Question 1 against residuals of Question 2}
+			\caption{Scatterplot of residuals of Question 1 against residuals of Question 2}
 		\end{figure}
 		
-		\noindent This is the added variable plot. The points are centred around $(0, 0)$ and the line goes upward, showing that \texttt{presvote} is still positively related to \texttt{voteshare} once \texttt{difflog} is taken into account.
+		\noindent The points are centred around $(0, 0)$ and the line goes upward, showing that \texttt{presvote} is still positively related to \texttt{voteshare} once \texttt{difflog} is taken into account.
 		
 		\item Write the prediction equation.
 		
@@ -224,11 +232,13 @@
 	\begin{enumerate}
 		\item Run a regression where the outcome variable is the incumbent's \texttt{voteshare} and the explanatory variables are \texttt{difflog} and \texttt{presvote}.
 		
+		\noindent To run the regression, I used the \texttt{lm()} function in \texttt{R}, with \texttt{voteshare} as the outcome variable and \texttt{difflog} and \texttt{presvote} as the explanatory variables. The results are reported in Table~\ref{tab:regression_q5}.
+		
 		\lstinputlisting[language=R, firstline=195, lastline=195]{PS03_answersEL.R}
 		
 		\input{regression_q5.tex}
 		
-		\noindent Holding \texttt{presvote} constant, a one unit increase in \texttt{difflog} is associated with an increase of about 0.036 in the incumbent's vote share. Holding \texttt{difflog} constant, a 1 percentage point increase in \texttt{presvote} is associated with an increase of about 0.26 percentage points in the incumbent's vote share. Both coefficients are statistically significant (p-value $< 0.001$), and together the two variables explain about 45\% of the variation in \texttt{voteshare}.
+		\noindent The intercept (0.449) is the predicted vote share of the incumbent when both explanatory variables are 0, that is, when the incumbent and the challenger spend the same amount and the presidential candidate of the incumbent's party receives no votes in the district. Since \texttt{presvote} is never close to 0 in the data (its minimum is about 0.19), this situation does not exist in practice, so the intercept mainly serves to position the regression line. Holding \texttt{presvote} constant, a one unit increase in \texttt{difflog} is associated with an increase of about 0.036 in the incumbent's vote share. Holding \texttt{difflog} constant, a 1 percentage point increase in \texttt{presvote} is associated with an increase of about 0.26 percentage points in the incumbent's vote share. Both coefficients are statistically significant (p-value $< 0.001$), and together the two variables explain about 45\% of the variation in \texttt{voteshare}.
 		
 		\item Write the prediction equation.
 		
@@ -238,9 +248,11 @@
 		
 		\item What is it in this output that is identical to the output in Question 4? Why do you think this is the case?
 		
-		\noindent The coefficient of \texttt{presvote} in Question 5 is identical to the slope in Question 4: both are 0.2569, with the same standard error (0.0118) and the same t value (21.84).
+		\noindent The coefficient of \texttt{presvote} in Question 5 is identical to the slope of \texttt{resid\_2} in Question 4: both are 0.257, with the same standard error (0.012), so the two models also give the same t value and the same p-value.
 		
-		\noindent This happens because of how multiple regression works. The residuals from Question 1 are the part of \texttt{voteshare} that is not explained by \texttt{difflog}, and the residuals from Question 2 are the part of \texttt{presvote} that is not explained by \texttt{difflog}. When we regress one set of residuals on the other, we measure the relationship between \texttt{presvote} and \texttt{voteshare} after removing the effect of \texttt{difflog} from both. This is exactly what the coefficient of \texttt{presvote} measures in the multiple regression: the effect of \texttt{presvote} holding \texttt{difflog} constant. This result is known as the Frisch-Waugh-Lovell theorem, and the plot in Question 4 is the added variable plot for \texttt{presvote}. The residual standard errors are only very slightly different (0.07338 and 0.07339) because Question 5 estimates one more coefficient, so it has one less degree of freedom (3190 instead of 3191).
+		\noindent This happens because both models measure the same thing, namely the effect of \texttt{presvote} on \texttt{voteshare} after controlling for \texttt{difflog}. In Questions 1 and 2, we removed the effect of \texttt{difflog} from both variables: the residuals from Question 1 are the part of \texttt{voteshare} that is not explained by \texttt{difflog}, and the residuals from Question 2 are the part of \texttt{presvote} that is not explained by \texttt{difflog}. When we regress the first residuals on the second in Question 4, we are left only with the relationship between \texttt{presvote} and \texttt{voteshare} that does not depend on \texttt{difflog}. This is exactly what multiple regression does when it estimates the coefficient of \texttt{presvote} in Question 5, which is interpreted as the effect of \texttt{presvote} holding \texttt{difflog} constant.
+		
+		\noindent This also explains why the coefficient of \texttt{presvote} (0.257) is smaller than in the simple regression of Question 3 (0.388). Since \texttt{difflog} is related to both \texttt{voteshare} and \texttt{presvote}, the simple regression attributes to \texttt{presvote} part of the variation in \texttt{voteshare} that is actually shared with \texttt{difflog}. If we did not control for \texttt{difflog}, we would therefore overestimate the effect of \texttt{presvote} on the incumbent's vote share.
 	\end{enumerate}
 	
 \end{document}
